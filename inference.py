@@ -133,7 +133,7 @@ def main():
     #Setting inference device to cuda or cpu
     device = "cuda" if torch.cuda.is_available() else "cpu"  # Cuda to run on GPU!
     #Defining the model class (RGBDNet with numclasses)
-    model = RGBDepthNet(num_classes=4)
+    model = RGBDepthNet(num_classes=2)
     #Loading the pretrained model
     model.load_state_dict(torch.load(default_dir+default_file))
     #Setting loaded model to cuda device
@@ -196,8 +196,8 @@ def main():
     RGBDutils.imshow(outRGB,outDepth, title='Images Batch From Input Dataset')
     
     #Loading images: RGB abd Depth
-    img1 = Image.open(default_dir+'val/rgb/class1/7.png')
-    img2 = Image.open(default_dir+'val/depth/class1/7.png')
+    img1 = Image.open(default_dir+'test/rgb/class2/5.png')
+    img2 = Image.open(default_dir+'test/depth/class2/5.png')
    
     fig = plt.figure(figsize=(10, 7))
     fig.add_subplot(1, 2, 1)
@@ -237,7 +237,7 @@ def main():
         classes = [i.strip() for i in labels.readlines()]
     print('-'*100)
     print("Classes info:")
-    for i in range(4):
+    for i in range(2):
         print("Class " + str(i+1) + ": " + str(classes[i]))
     print('-'*100)
     #visualization of the activation maps of input images
@@ -249,8 +249,8 @@ def main():
     percentage = F.softmax(output, dim=1)[0] * 100.0
     # obtain the classes (with the highest probability) the input belongs to
     results = [(classes[i], percentage[i].item()) for i in indices[0][:4]]
-    print("Set 4 classes. Inference info: input RGB+Depth images belongs to")
-    for i in range(4):
+    print("Set 2 classes. Inference info: input RGB+Depth images belongs to")
+    for i in range(2):
         print('{}: {:.4f}%'.format(results[i][0], results[i][1]))
     print('-'*100)
    #Uncomment to show and save ANN Visual Model

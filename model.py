@@ -26,10 +26,10 @@ device = "cuda" if torch.cuda.is_available() else "cpu"  # Cuda to run on GPU!
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset-dir', type=str, default=default_dir)
-    parser.add_argument('--epochs', type=int, default=50)
-    parser.add_argument('--batch-size', type=int, default=64)
+    parser.add_argument('--epochs', type=int, default=30)
+    parser.add_argument('--batch-size', type=int, default=8)
     parser.add_argument('--lr', type=float, default=0.001)
-    parser.add_argument('--wd', type=float, default=0.0001)
+    parser.add_argument('--wd', type=float, default=0.00001)
     return parser.parse_args()
 
 
@@ -82,7 +82,7 @@ class RGBDepthNet(nn.Module):
 
         # classifier
         self.classifier = nn.Sequential(
-            nn.Dropout(p=0.6),
+            nn.Dropout(p=0.5),
             nn.Linear(512 * 1 * 1, 512),
             nn.SiLU(inplace=True),
             nn.Linear(512, num_classes)
@@ -270,8 +270,8 @@ def main():
     criterion = nn.CrossEntropyLoss().cuda()
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.wd)
 
-    scheduler = lr_scheduler.ReduceLROnPlateau(optimizer, patience=2)
-    #scheduler = None
+    #scheduler = lr_scheduler.ReduceLROnPlateau(optimizer, patience=2)
+    scheduler = None
    
     # train
     model = train_model(dataloaders, model, criterion, optimizer, scheduler, args.epochs, use_gpu, vis_enable=True)
